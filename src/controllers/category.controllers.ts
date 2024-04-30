@@ -5,7 +5,9 @@ export class CategoryControllers{
     async create(req: Request, res: Response){
         const categoryServices = new CategoryServices()
 
-        const response = await categoryServices.create(req.body)
+        const userId = res.locals.decode.id
+
+        const response = await categoryServices.create(req.body, userId)
 
         return res.status(201).json(response)
     }

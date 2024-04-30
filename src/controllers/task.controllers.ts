@@ -5,7 +5,9 @@ export class TaskControllers{
     async create(req: Request, res: Response){
         const taskServices = new TaskServices()
 
-        const response = await taskServices.create(req.body)
+        const userId = res.locals.decode.id
+
+        const response = await taskServices.create(req.body, userId)
 
         return res.status(201).json(response)
     }
@@ -13,7 +15,10 @@ export class TaskControllers{
     async findMany(req: Request, res: Response){
         const taskServices = new TaskServices()
         const search = req.query.category
-        const response = await taskServices.findMany(search as string)
+
+        const userId = res.locals.decode?.id
+
+        const response = await taskServices.findMany(search as string, userId)
 
         return res.status(200).json(response)
     }

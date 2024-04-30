@@ -5,10 +5,11 @@ export const taskSchema = z.object({
     title: z.string().min(1),
     content: z.string().min(1),
     finished: z.boolean().default(false),
-    categoryId: z.number().positive().nullish()
+    categoryId: z.number().positive().nullish(),
+    userId: z.number().positive()
 })
 
-export const taskCreateSchema = taskSchema.omit({id: true})
+export const taskCreateSchema = taskSchema.omit({id: true, userId: true})
 
 export const taskUpdateSchema = taskCreateSchema.partial()
 

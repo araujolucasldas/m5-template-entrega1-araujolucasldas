@@ -2,22 +2,25 @@ import { prisma } from "../database/prisma";
 import { TTask, TTaskCreate, TTaskUpdate } from "../schemas/task.schemas";
 
 export class TaskServices{
-    async create(body: TTaskCreate): Promise<TTask>{
-        const data = await prisma.task.create({data: body})
+    async create(body: TTaskCreate, userId: number): Promise<TTask>{
+        const newTask = {...body, userId}
+        
+        const data = await prisma.task.create({data: newTask})
 
         return data
     }
 
-    async findMany(search?: string): Promise<TTask[]>{
+    async findMany(search?: string, userId?: number): Promise<TTask[]>{
         if(search){
             const data = await prisma.task.findMany({
                 include: {category: true},
-                where: {category: {name: {contains: search, mode: "insensitive"}}}
+                where: {userId, category: {name: {contains: search, mode: "insensitive"}}}
                 })
     
             return data
         }
         const data = await prisma.task.findMany({
+            where: {userId},
             include: {category: true}
             })
 

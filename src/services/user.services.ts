@@ -1,16 +1,12 @@
-import { injectable } from "tsyringe";
 import { TUserLoginBody, TUserLoginReturn, TUserRegisterBody, TUserReturn, userReturnSchema } from "../schemas/user.schemas";
 import {hash, compare} from "bcryptjs";
-import bcrypt from "bcrypt";
 import { prisma } from "../database/prisma";
 import { AppError } from "../errors/appError";
 import jwt from "jsonwebtoken";
 
-@injectable()
 export class UserServices{
     async Register(body: TUserRegisterBody): Promise<TUserReturn>{
         const hashPassword = await hash(body.password, 10)
-        //const hashPassword = await bcrypt.hash(body.password, 10)
         
         const newUser = {
             name: body.name,
@@ -24,14 +20,13 @@ export class UserServices{
     }
 
     async Login(body: TUserLoginBody): Promise<TUserLoginReturn>{
-        const user = await prisma.user.findFirst({where: {email: body.email}})
+       const user = await prisma.user.findFirst({where: {email: body.email}})
 
         if(!user){
             throw new AppError(404, "User not exists")
         }
 
         const toCompare = await compare(body.password, user.password)
-        //const compare = await bcrypt.compare(body.password, user.password)
 
         if(!toCompare){
             throw new AppError(401, "Email and password doesn't match")

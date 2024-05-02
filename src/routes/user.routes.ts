@@ -9,16 +9,14 @@ import { isEmailValid } from "../middlewares/isEmailValid.middleware";
 
 export const userRouter = Router()
 
-container.registerSingleton("UserServices", UserServices)
-
-const userControllers = container.resolve(UserControllers)
+const userControllers = new UserControllers()
 
 userRouter.post("/", ValidateBody.execute(userRegisterBodySchema),
-    isEmailValid.execute,
-    (req, res) => { userControllers.Register(req, res) })
+    isEmailValid.execute, userControllers.Register)
 
 userRouter.post("/login", ValidateBody.execute(userLoginBodySchema),
-    (req, res) => { userControllers.Login(req, res) })
+    userControllers.Login)
 
 userRouter.get("/profile", ValidateToken.execute,
-    (req, res) => { userControllers.GetUser(req, res) })
+    userControllers.GetUser)
+
